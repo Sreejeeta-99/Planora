@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 import "dotenv/config";
 
+import authRouter from "./routes/auth.js";
+
 const app = express();
 app.use(
   cors({
@@ -17,6 +19,8 @@ app.use(express.urlencoded({ extended: true, limit: "5mb" }));
 app.use(morgan("dev"));
 
 mongoose.connect(process.env.MONGODB_URL).then(()=>{console.log("database connected")});
+
+app.use("/api/v1/auth",authRouter);
 
 const port = process.env.PORT;
 app.listen(port, () => console.log(`Server is running on port ${port}`));
