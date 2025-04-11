@@ -1,5 +1,7 @@
-import { hashPassword } from "../helpers/auth.js";
+import { comparePassword, hashPassword } from "../helpers/auth.js";
 import User from "./../model/user.js";
+import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 
 export const signup = async (req, res) => {
   //console.log(req.body);
@@ -29,3 +31,59 @@ export const signup = async (req, res) => {
     id: user._id,
   });
 };
+
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email and password are required" });
+  }
+  const user = await User.findOne({ email }).exec();
+  if (!user) {
+    return res.status(400).json({ error: "Incorrect credentials" });
+  }
+  const isMatch = await comparePassword(password, user.password);
+  if (!isMatch) {
+    return res.status(400).json({ error: "Incorrect password" });
+  }
+
+  const token = jwt.sign({ userId: user._id, userRole: user.role[0] },process.env.JWTSECRET,{expiresIn:"10d"});
+  return res.json({token, userId: user._id, userRole: user.role[0] });
+};
+
+
+export const forgotPassword= async(req,res) =>{
+  const {email} = req.body;
+  const user = await User.findOne({ email }).exec();
+  if (!user) {
+    return res.status(400).json({ error: "Email not found" });
+  }
+  var transporter= nodemailer.createTransport({
+    service: "gmail",
+    auth: { 
+      user: process.env.EMAILID,
+      pass: process.env.EMAILPASSWORD
+    }
+  })
+  var mailOptions = {
+    from: process.env.EMAILID ,
+    to: email ,
+    subject: "Reset Password",
+    text: `${ user._id }`//will be changed later
+  }
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      return res.status(400).json({ error: "Error sending email" });
+    }
+    return res.json({ message: "Email sent successfully" });
+  });
+};
+
+export const resetPassword= async(req,res)=>{
+  const {id}=req.params;
+  const {password}=req.body; //new password
+  const hashedPassword= await hashPassword(password);//utils
+  User.findByIdAndUpdate({_id:id}, {password:hashedPassword})
+    .then(()=>res.status(200).json({msg:"Password updated"}))
+    .catch((err)=>res.status(400).json({error:err.message}));
+}
