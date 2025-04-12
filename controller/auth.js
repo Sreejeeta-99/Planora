@@ -58,6 +58,7 @@ export const forgotPassword= async(req,res) =>{
   if (!user) {
     return res.status(400).json({ error: "Email not found" });
   }
+   // Creation of a transporter object using nodemailer to send the email
   var transporter= nodemailer.createTransport({
     service: "gmail",
     auth: { 
@@ -65,12 +66,14 @@ export const forgotPassword= async(req,res) =>{
       pass: process.env.EMAILPASSWORD
     }
   })
+  // Define the email options (who it's from, who it's going to, subject, and body
   var mailOptions = {
     from: process.env.EMAILID ,
     to: email ,
     subject: "Reset Password",
     text: `${ user._id }`//will be changed later
   }
+  // Send the email using transporter
   transporter.sendMail(mailOptions, function(error, info){
     if (error) {
       return res.status(400).json({ error: "Error sending email" });
@@ -87,3 +90,4 @@ export const resetPassword= async(req,res)=>{
     .then(()=>res.status(200).json({msg:"Password updated"}))
     .catch((err)=>res.status(400).json({error:err.message}));
 }
+
