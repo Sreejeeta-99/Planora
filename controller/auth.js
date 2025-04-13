@@ -32,7 +32,6 @@ export const signup = async (req, res) => {
   });
 };
 
-
 export const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -47,34 +46,37 @@ export const login = async (req, res) => {
     return res.status(400).json({ error: "Incorrect password" });
   }
 
-  const token = jwt.sign({ userId: user._id, userRole: user.role[0] },process.env.JWTSECRET,{expiresIn:"10d"});
-  return res.json({token, userId: user._id, userRole: user.role[0] });
+  const token = jwt.sign(
+    { userId: user._id, userRole: user.role[0] },
+    process.env.JWTSECRET,
+    { expiresIn: "10d" }
+  );
+  return res.json({ token, userId: user._id, userRole: user.role[0] });
 };
 
-
-export const forgotPassword= async(req,res) =>{
-  const {email} = req.body;
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
   const user = await User.findOne({ email }).exec();
   if (!user) {
     return res.status(400).json({ error: "Email not found" });
   }
-   // Creation of a transporter object using nodemailer to send the email
-  var transporter= nodemailer.createTransport({
+  // Creation of a transporter object using nodemailer to send the email
+  var transporter = nodemailer.createTransport({
     service: "gmail",
-    auth: { 
+    auth: {
       user: process.env.EMAILID,
-      pass: process.env.EMAILPASSWORD
-    }
-  })
+      pass: process.env.EMAILPASSWORD,
+    },
+  });
   // Define the email options (who it's from, who it's going to, subject, and body
   var mailOptions = {
-    from: process.env.EMAILID ,
-    to: email ,
+    from: process.env.EMAILID,
+    to: email,
     subject: "Reset Password",
-    text: `${ user._id }`//will be changed later
-  }
+    text: `${user._id}`, //will be changed later
+  };
   // Send the email using transporter
-  transporter.sendMail(mailOptions, function(error, info){
+  transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       return res.status(400).json({ error: "Error sending email" });
     }
@@ -82,12 +84,11 @@ export const forgotPassword= async(req,res) =>{
   });
 };
 
-export const resetPassword= async(req,res)=>{
-  const {id}=req.params;
-  const {password}=req.body; //new password
-  const hashedPassword= await hashPassword(password);//utils
-  User.findByIdAndUpdate({_id:id}, {password:hashedPassword})
-    .then(()=>res.status(200).json({msg:"Password updated"}))
-    .catch((err)=>res.status(400).json({error:err.message}));
-}
-
+export const resetPassword = async (req, res) => {
+  const { id } = req.params;
+  const { password } = req.body; //new password
+  const hashedPassword = await hashPassword(password); //utils
+  User.findByIdAndUpdate({ _id: id }, { password: hashedPassword })
+    .then(() => res.status(200).json({ msg: "Password updated" }))
+    .catch((err) => res.status(400).json({ error: err.message }));
+};
