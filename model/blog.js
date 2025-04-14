@@ -10,6 +10,7 @@ const commentSchema = new Schema({
 
 const blogSchema = new Schema(
   {
+    author: { type: ObjectId, ref: "User", required:true },
     title: { type: String, required: true },
     content: { type: String, required: true },
     image: {

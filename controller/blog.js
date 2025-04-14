@@ -37,6 +37,9 @@ export const updateBlog = async (req, res) => {
   if (!blog) {
     return res.status(404).json({ error: "Blog not found" });
   }
+  if (blog.author._id.toString() !== req.userId) {
+    return res.status(403).json({ error: "Unauthorized" });
+  }  
   const { title, content} = req.body;
   blog.title = title;
   blog.content = content;
@@ -52,9 +55,9 @@ export const deleteBlog = async (req, res) => {
     return res.status(404).json({ error: "Blog not found" });
   }
   if (!blog.author) {
-    return res.status(404).json({ error: "Blog author not found" });
+    return res.status(403).json({ error: "Blog author not found" });
   }
-  if (blog.author.toString() !== req.userId) {
+  if (blog.author._id.toString() !== req.userId) {
     return res.status(403).json({ error: "Unauthorized" });
   }  
   await Blog.findByIdAndDelete(req.params.id);
