@@ -1,5 +1,5 @@
 import express from "express";
-import { createBlog, fetchSingleBlog, getAllBlogs, updateBlog, deleteBlog} from "../controller/blog.js";
+import { createBlog, fetchSingleBlog, getAllBlogs, updateBlog, deleteBlog, likeBlog} from "../controller/blog.js";
 import { authenticate_token } from "../middlewares/auth.js";
 
 const router = express.Router();
@@ -8,4 +8,5 @@ router.get("/fetch/",getAllBlogs);
 router.get("/fetch/:id", fetchSingleBlog);
 router.put("/update/:id", authenticate_token, updateBlog);
 router.delete("/delete/:id",authenticate_token, deleteBlog);
+router.patch("/like/:id",likeBlog);
 export default router;
