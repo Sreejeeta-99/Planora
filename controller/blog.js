@@ -1,6 +1,8 @@
 import User from "./../model/user.js";
 import Blog from "./../model/blog.js";
 
+//import Comment from "../model/comment.js";
+
 export const createBlog = async (req, res) => {
   console.log(req.userId);
   console.log(req.body);
@@ -26,12 +28,7 @@ export const getAllBlogs = async (req, res) => {
 
 //Fetching a single blog by its ID
 export const fetchSingleBlog = async (req, res) => {
-  const blog = await Blog.findById(req.params.id).populate(
-    "author",
-    null,
-    null,
-    { strictPopulate: false }
-  );
+  const blog = await Blog.findById(req.params.id);
   if (!blog) {
     return res.status(404).json({ error: "Blog not found" });
   }
@@ -56,12 +53,7 @@ export const updateBlog = async (req, res) => {
 
 //Delete blog
 export const deleteBlog = async (req, res) => {
-  const blog = await Blog.findById(req.params.id).populate(
-    "author",
-    null,
-    null,
-    { strictPopulate: false }
-  );
+  const blog = await Blog.findById(req.params.id);
   console.log(blog);
   if (!blog) {
     return res.status(404).json({ error: "Blog not found" });
@@ -78,11 +70,11 @@ export const deleteBlog = async (req, res) => {
 
 //blog likes
 export const likeBlog = async (req, res) => {
-  const blog = await Blog.findById(req.params.id).populate("likes",null,null,{ strictPopulate: false });
+  const blog = await Blog.findById(req.params.id);
   if (!blog) {
     return res.status(404).json({ error: "Blog not found" });
   }
-  console.log("User ID:", req.userId);
+  //console.log("User ID:", req.userId);
   const index = blog.likes.indexOf(req.userId);
   if (index !== -1) {
     //if the user has already liked the blog
@@ -93,7 +85,45 @@ export const likeBlog = async (req, res) => {
   await blog.save();
   return res.json({
     message: "Likes",
-    message: userIndex !== -1 ? "Unliked" : "Liked",
+    message: index !== -1 ? "Unliked" : "Liked",
     totalLikes: blog.likes.length,
   });
+};
+
+// Blog comment
+export const addComment = async (req, res) => {
+  const blog = await Blog.findById(req.params.id);
+
+  if (!blog) {
+    return res.status(404).json({ error: "Blog not found" });
+  }
+
+  // const commentText = req.body.text;
+  // if (!commentText || commentText.trim() === '') {
+  //   return res.status(400).json({ error: "Comment text is required" });
+  // }
+
+  const newComment = {
+    comment: req.body.comment,
+    author: req.userId,
+  };
+
+  blog.comments.push(newComment);
+  await blog.save();
+  return res.json({
+    message: "Comment added successfully",
+    comment: newComment,
+  });
+};
+
+//view blog
+export const viewBlog = async (req, res) => {
+  console.log("Trying to fetch blog:", req.params.id);
+  const blog = await Blog.findById(req.params.id);
+  if (!blog) {
+    return res.status(404).json({ error: "Blog not found" });
+  }
+  blog.views += 1; // Increment view count
+  await blog.save(); // Save updated blog
+  return res.json(blog);
 };
