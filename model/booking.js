@@ -6,7 +6,7 @@ const bookingSchema = new Schema(
   {
     user: { type: ObjectId, ref: "User",required:true },
     hotel: { type: String, required: true },
-    room: { type: ObjectId, ref: "Room" },
+    room: { type: Number, require:true },
     checkin: { type: Date },
     checkout: { type: Date },
     totalAmount: { type: Number, required: true },

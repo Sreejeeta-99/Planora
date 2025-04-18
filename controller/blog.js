@@ -1,8 +1,6 @@
 import User from "./../model/user.js";
 import Blog from "./../model/blog.js";
 
-//import Comment from "../model/comment.js";
-
 export const createBlog = async (req, res) => {
   console.log(req.userId);
   console.log(req.body);
