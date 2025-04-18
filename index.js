@@ -6,6 +6,7 @@ import "dotenv/config";
 
 import authRouter from "./routes/auth.js";
 import blogRouter from "./routes/blog.js";
+import bookingRouter from "./routes/booking.js";
 
 const app = express();
 app.use(
@@ -25,6 +26,7 @@ mongoose.connect(process.env.MONGODB_URL).then(() => {
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/blog", blogRouter);
+app.use("/api/v1/booking", bookingRouter);
 
 const port = process.env.PORT;
 app.listen(port, () => console.log(`Server is running on port ${port}`));
