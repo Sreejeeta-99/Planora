@@ -26,3 +26,23 @@ export const getBookings = async (req, res) => {
     res.json(bookings);
 }
 
+//update Booking status
+export const updateBookingStatus = async (req, res) => {
+    const { status } = req.body;
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) {
+        return res.status(404).json({ error: "Booking not found" });
+      }
+    booking.status = status;
+    await booking.save();
+    res.json({ msg: "Booking status updated", booking });
+}
+
+//delete booking
+export const deleteBooking = async (req, res) => {
+    const booking = await Booking.findByIdAndDelete(req.params.id);
+    if (!booking) {
+        return res.status(404).json({ error: "Booking not found" });
+    }
+    res.json({ msg: "Booking deleted successfully" });
+}
