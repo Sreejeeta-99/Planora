@@ -4,17 +4,18 @@ const { ObjectId } = Schema;
 
 const bookingSchema = new Schema(
   {
-    user: { type: ObjectId, ref: "User",required:true },
+    user: { type: ObjectId, ref: "User", required: true },
     hotel: { type: String, required: true },
-    room: { type: Number, require:true },
+    //room: { type: Number, require:true },
+    room: { type: ObjectId, ref: "Room", required: true },
     checkin: { type: Date },
     checkout: { type: Date },
     totalAmount: { type: Number, required: true },
-    status: { 
-        type: String, 
-        enum: ["Pending", "Confirmed", "Cancelled"], 
-        default: "Pending" 
-    }, 
+    status: {
+      type: String,
+      enum: ["Pending", "Confirmed", "Cancelled"],
+      default: "Pending",
+    },
   },
   { timestamps: true }
 );
