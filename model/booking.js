@@ -16,18 +16,11 @@ const paymentInfoSchema = new mongoose.Schema({
   paymentDate: { type: Date }
 }, { _id: false });
 
-const tripDetailsSchema = new mongoose.Schema({
-  tripId: { type: mongoose.Schema.Types.ObjectId, ref: 'Trip', required: true },
-  destination: { type: String },
-  startDate: { type: Date },
-  endDate: { type: Date },
-  duration: { type: Number } // optional
-}, { _id: false });
 
 const bookingSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   
-  tripDetails: tripDetailsSchema,
+  trip: { type: mongoose.Schema.Types.ObjectId, ref: 'Trip', required: true },
   travelerInfo: [travelerSchema],
 
   bookingStatus: {
@@ -37,10 +30,6 @@ const bookingSchema = new mongoose.Schema({
   },
 
   paymentInfo: paymentInfoSchema,
-  specialRequests: { type: String },
-
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-});
+},{timestamps: true});
 
 module.exports = mongoose.model('Booking', bookingSchema);
