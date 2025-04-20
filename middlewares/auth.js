@@ -21,3 +21,12 @@ export const authenticate_token = async (req, res, next) => {
     console.error(error);
   }
 };
+
+export const checkAdmin = async (req, res, next) => {
+  if (req.userRole !== "ADMIN") {
+    return res
+      .status(403)
+      .json({ message: "Access denied. You are not an admin." });
+  }
+  next();
+};

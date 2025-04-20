@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
+import { Schema } from "mongoose";
 
 const travelerSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -18,9 +19,9 @@ const paymentInfoSchema = new mongoose.Schema({
 
 
 const bookingSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  userId: { type: ObjectId, ref: 'User', required: true },
   
-  trip: { type: mongoose.Schema.Types.ObjectId, ref: 'Trip', required: true },
+  trip: { type: ObjectId, ref: 'Trip', required: true },
   travelerInfo: [travelerSchema],
 
   bookingStatus: {
