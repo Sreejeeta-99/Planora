@@ -5,7 +5,7 @@ import nodemailer from "nodemailer";
 
 export const signup = async (req, res) => {
   //console.log(req.body);
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
   if (!name || !name.length > 2) {
     return res.status(400).json({ error: "Name is required" });
   }
@@ -24,7 +24,7 @@ export const signup = async (req, res) => {
   }
 
   const hashedPassword = await hashPassword(password);
-  const user = new User({ name, email, password: hashedPassword });
+  const user = new User({ name, email, password: hashedPassword, role });
   await user.save();
   return res.json({
     message: "User created successfully",
