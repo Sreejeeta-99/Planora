@@ -13,16 +13,8 @@ export const createTrip = async (req, res) => {
       availableSeats,
       imageUrl,
     } = req.body;
-    const newTrip = new Trip({
-      title,
-      destination,
-      description,
-      startDate,
-      endDate,
-      pricePerPerson,
-      availableSeats,
-      imageUrl,
-    });
+    const newTrip = new Trip({ ...req.body });
+    //const newTrip = new Trip({...req.body,imageURL:req.body.myImageURL});
     await newTrip.save();
     res
       .status(201)
@@ -77,7 +69,6 @@ export const deleteTrip = async (req, res) => {
     }
     return res.json({
       message: "Trip deleted successfully",
-      data: deletedTrip,
     });
   } catch (err) {
     return res
@@ -89,16 +80,23 @@ export const deleteTrip = async (req, res) => {
 export const updateStatus = async (req, res) => {
   try {
     const { bookingId } = req.params;
-    const { status } = req.body;
-    const booking = await Booking.findById(bookingId);
-    if (!booking) {
-      return res.status(404).json({ error: "Booking not found" });
-    }
-    booking.status = status;
-    await booking.save();
-    return res
-      .status(200)
-      .json({ message: "Booking status updated successfully", data: booking });
+    const { status } = req.query;
+    // const booking = await Booking.findById(bookingId);
+    // if (!booking) {
+    //   return res.status(404).json({ error: "Booking not found" });
+    // }
+    // booking.status = status;
+
+    Booking.findByIdAndUpdate(bookingId, {status},{new:true}).then((booking) => {
+      return res
+        .status(200)
+        .json({
+          message: "Booking status updated successfully",
+          data: booking,
+        });
+    });
+
+    //await booking.save();
   } catch (err) {
     return res
       .status(500)
