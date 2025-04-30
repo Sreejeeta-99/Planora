@@ -95,11 +95,33 @@ export const updateStatus = async (req, res) => {
           data: booking,
         });
     });
-
     //await booking.save();
   } catch (err) {
     return res
       .status(500)
       .json({ error: "Error updating booking status", details: err.message });
+  }
+};
+
+export const getAllBookings = async(req,res)=>{
+  try {
+    const bookings = await Booking.find();
+    return res.status(200).json({ error: "Error fetching bookings", details: err.message });
+  } 
+  catch (error) {
+    return res.status(500).json({ error: "Error fetching bookings", details: err.message });
+  }
+};
+
+export const fetchBookingById = async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) {
+      return res.status(404).json({ error: "No booking found" });
+    }
+    return res.status(200).json(booking);
+  } 
+  catch (error) {
+    return res.status(500).json({ error: "Server error", details: error.message });
   }
 };
