@@ -10,9 +10,11 @@ const productSchema = new Schema({
         enum:[ 'Winter Essentials',
             'Summer Essentials',
             'Monsoon Gear',
+            'Camping Gear',
             'Desert Travel',
             'Trekking Equipment',
             'Beach Accessories',
+            'Hiking Gear',
             'Mountain Gear'],
         required:true
     },
