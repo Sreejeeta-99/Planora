@@ -10,6 +10,7 @@ import adminRouter from "./routes/admin.js";
 import publicRouter from "./routes/public.js";
 import userRouter from "./routes/user.js";
 import productRouter from "./routes/product.js";
+import wishlistRouter from "./routes/wishlist.js";
 
 const app = express();
 app.use(
@@ -33,6 +34,7 @@ app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/public", publicRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/product",productRouter);
+app.use("/api/v1/wishlist",wishlistRouter);
 
 const port = process.env.PORT;
 app.listen(port, () => console.log(`Server is running on port ${port}`));
